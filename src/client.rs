@@ -1,7 +1,10 @@
 //! The main TCGdex client
 
 use crate::endpoints::Endpoint;
-use crate::models::{Card, CardResume, IntList, Language, Serie, SerieResume, Set, SetResume, StringEndpoint, StringList};
+use crate::models::{
+    Card, CardResume, IntList, Language, Serie, SerieResume, Set, SetResume, StringEndpoint,
+    StringList,
+};
 
 /// TCGdex API client
 pub struct TCGdex {
@@ -65,22 +68,22 @@ impl TCGdex {
             endpoint: endpoint.to_string(),
             language,
             client,
-            card: Endpoint::new(String::new(), "cards"),
-            set: Endpoint::new(String::new(), "sets"),
-            serie: Endpoint::new(String::new(), "series"),
-            variant: Endpoint::new(String::new(), "variants"),
-            trainer_type: Endpoint::new(String::new(), "trainer-types"),
-            suffix: Endpoint::new(String::new(), "suffixes"),
-            stage: Endpoint::new(String::new(), "stages"),
-            regulation_mark: Endpoint::new(String::new(), "regulation-marks"),
-            energy_type: Endpoint::new(String::new(), "energy-types"),
-            dex_id: Endpoint::new(String::new(), "dex-ids"),
-            type_: Endpoint::new(String::new(), "types"),
-            retreat: Endpoint::new(String::new(), "retreats"),
-            rarity: Endpoint::new(String::new(), "rarities"),
-            illustrator: Endpoint::new(String::new(), "illustrators"),
-            hp: Endpoint::new(String::new(), "hp"),
-            category: Endpoint::new(String::new(), "categories"),
+            card: Endpoint::default(),
+            set: Endpoint::default(),
+            serie: Endpoint::default(),
+            variant: Endpoint::default(),
+            trainer_type: Endpoint::default(),
+            suffix: Endpoint::default(),
+            stage: Endpoint::default(),
+            regulation_mark: Endpoint::default(),
+            energy_type: Endpoint::default(),
+            dex_id: Endpoint::default(),
+            type_: Endpoint::default(),
+            retreat: Endpoint::default(),
+            rarity: Endpoint::default(),
+            illustrator: Endpoint::default(),
+            hp: Endpoint::default(),
+            category: Endpoint::default(),
         };
 
         // Update base URL for all endpoints
@@ -112,26 +115,24 @@ impl TCGdex {
         &self.client
     }
 
-    // Update the base URL for all endpoints
+    // Initialize or update all endpoints
     fn update_endpoints(&mut self) {
-        let base_url = format!("{}/{}", self.endpoint, self.language);
-        
-        self.card.set_base_url(&base_url);
-        self.set.set_base_url(&base_url);
-        self.serie.set_base_url(&base_url);
-        self.variant.set_base_url(&base_url);
-        self.trainer_type.set_base_url(&base_url);
-        self.suffix.set_base_url(&base_url);
-        self.stage.set_base_url(&base_url);
-        self.regulation_mark.set_base_url(&base_url);
-        self.energy_type.set_base_url(&base_url);
-        self.dex_id.set_base_url(&base_url);
-        self.type_.set_base_url(&base_url);
-        self.retreat.set_base_url(&base_url);
-        self.rarity.set_base_url(&base_url);
-        self.illustrator.set_base_url(&base_url);
-        self.hp.set_base_url(&base_url);
-        self.category.set_base_url(&base_url);
+        self.card = Endpoint::new(self, "cards");
+        self.set = Endpoint::new(self, "sets");
+        self.serie = Endpoint::new(self, "series");
+        self.variant = Endpoint::new(self, "variants");
+        self.trainer_type = Endpoint::new(self, "trainer-types");
+        self.suffix = Endpoint::new(self, "suffixes");
+        self.stage = Endpoint::new(self, "stages");
+        self.regulation_mark = Endpoint::new(self, "regulation-marks");
+        self.energy_type = Endpoint::new(self, "energy-types");
+        self.dex_id = Endpoint::new(self, "dex-ids");
+        self.type_ = Endpoint::new(self, "types");
+        self.retreat = Endpoint::new(self, "retreats");
+        self.rarity = Endpoint::new(self, "rarities");
+        self.illustrator = Endpoint::new(self, "illustrators");
+        self.hp = Endpoint::new(self, "hp");
+        self.category = Endpoint::new(self, "categories");
     }
 }
 

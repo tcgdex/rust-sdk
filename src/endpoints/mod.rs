@@ -8,6 +8,7 @@ use serde::de::DeserializeOwned;
 
 use crate::error::Result;
 use crate::query::Query;
+use crate::TCGdex;
 
 /// A trait for models that can be fetched from the API
 #[async_trait]
@@ -35,6 +36,7 @@ pub trait Listable: Sized + DeserializeOwned + Debug {
 pub struct Endpoint<Item, List> {
     base_url: String,
     path: String,
+    client: reqwest::Client,
     _item: PhantomData<Item>,
     _list: PhantomData<List>,
 }
@@ -45,10 +47,11 @@ where
     List: Listable + Send + Sync,
 {
     /// Create a new endpoint with the given base URL and path
-    pub fn new(base_url: impl Into<String>, path: impl Into<String>) -> Self {
+    pub fn new(sdk: &TCGdex, path: impl Into<String>) -> Self {
         Self {
-            base_url: base_url.into(),
+            base_url: format!("{}/{}", sdk.get_endpoint(), sdk.language),
             path: path.into(),
+            client: sdk.client().clone(),
             _item: PhantomData,
             _list: PhantomData,
         }
@@ -61,70 +64,66 @@ where
     }
 
     /// Get a single item by ID
-    pub async fn get(&self, client: &reqwest::Client, id: &str) -> Result<Item> {
+    pub async fn get(&self, id: &str) -> Result<Item> {
         let url = format!("{}/{}/{}", self.base_url, self.path, id.replace(' ', "%20"));
-        
+
         // Print debug info in debug builds
         #[cfg(debug_assertions)]
-        println!("[DEBUG] Fetching URL: {}", url);
-        
-        let response = client.get(&url).send().await?;
-        
+        println!("[DEBUG] Fetching get URL: {}", url);
+
+        let response = self.client.get(&url).send().await?;
+
         #[cfg(debug_assertions)]
         {
             let status = response.status();
             println!("[DEBUG] Response status: {}", status);
-            
+
             if !status.is_success() {
                 let text = response.text().await?;
                 println!("[DEBUG] Error response body: {}", text);
                 return Err(crate::error::Error::NoData);
             }
         }
-        
+
         let response = response.error_for_status()?;
         let data = response.json().await?;
         Ok(data)
     }
 
     /// List all items, optionally filtered by a query
-    pub async fn list(
-        &self,
-        client: &reqwest::Client,
-        query: Option<&Query>,
-    ) -> Result<Vec<List>> {
+    pub async fn list(&self, query: Option<&Query>) -> Result<Vec<List>> {
         let mut url = format!("{}/{}", self.base_url, self.path);
-        
+
         if let Some(q) = query {
             url.push_str(&q.build());
         }
-        
+
         // Print debug info in debug builds
         #[cfg(debug_assertions)]
         println!("[DEBUG] Fetching list URL: {}", url);
-        
-        let response = client.get(&url).send().await?;
-        
+
+        let response = self.client.get(&url).send().await?;
+
         #[cfg(debug_assertions)]
         {
             let status = response.status();
             println!("[DEBUG] Response status: {}", status);
-            
+
             if !status.is_success() {
                 let text = response.text().await?;
                 println!("[DEBUG] Error response body: {}", text);
                 return Err(crate::error::Error::NoData);
             }
         }
-        
+
         let response = response.error_for_status()?;
-        
+
         // For debugging, check the response content
         #[cfg(debug_assertions)]
         {
             let body = response.text().await?;
             println!("[DEBUG] Response body: {}", body);
-            
+
             // Re-parse the saved body
             use serde_json::from_str;
             match from_str(&body) {
@@ -135,12 +134,28 @@ where
                 }
             }
         }
-        
+
         // In release mode, just parse directly
         #[cfg(not(debug_assertions))]
         {
             let data = response.json().await?;
             Ok(data)
+        }
+    }
+}
+
+impl<Item, List> Default for Endpoint<Item, List>
+where
+    Item: Fetchable + Send + Sync,
+    List: Listable + Send + Sync,
+{
+    fn default() -> Self {
+        Self {
+            base_url: String::new(),
+            path: String::new(),
+            client: reqwest::Client::default(),
+            _item: PhantomData,
+            _list: PhantomData,
         }
     }
 }

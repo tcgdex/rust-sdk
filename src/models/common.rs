@@ -5,13 +5,20 @@ use serde::{Deserialize, Serialize};
 /// Card ability information
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CardAbility {
-    /// The ability type (e.g., "Poku00e9mon Power", "Ability")
+    /// The ability type (e.g., "Pokémon Power", "Ability")
     #[serde(rename = "type")]
     pub type_: String,
     /// Name of the ability
     pub name: Option<String>,
     /// Description/Effect of the ability
     pub effect: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum Damage {
+    Number(u16),
+    Formula(String),
 }
 
 /// Card attack information
@@ -25,7 +32,7 @@ pub struct CardAttack {
     pub effect: Option<String>,
     /// Damage the attack deals (numeric or formula)
     #[serde(default)]
-    pub damage: Option<String>,
+    pub damage: Option<Damage>,
 }
 
 /// Card item information
@@ -77,25 +84,25 @@ pub struct Legal {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetCardCount {
     /// Total number of cards
-    pub total: i32,
+    pub total: u16,
     /// Number of cards officially numbered
-    pub official: i32,
+    pub official: u16,
     /// Number of cards with normal variant
-    pub normal: Option<i32>,
+    pub normal: Option<u16>,
     /// Number of cards with reverse variant
-    pub reverse: Option<i32>,
+    pub reverse: Option<u16>,
     /// Number of cards with holo variant
-    pub holo: Option<i32>,
+    pub holo: Option<u16>,
     /// Number of cards with first edition variant
     #[serde(rename = "firstEd")]
-    pub first_ed: Option<i32>,
+    pub first_ed: Option<u16>,
 }
 
 /// Set card count summary
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetCardCountResume {
     /// Total number of cards
-    pub total: i32,
+    pub total: u16,
     /// Number of cards officially numbered
-    pub official: i32,
+    pub official: u16,
 }

@@ -1,7 +1,7 @@
 //! IntEndpoint model implementation
 
-use serde::{Deserialize, Serialize};
 use async_trait::async_trait;
+use serde::{Deserialize, Serialize};
 
 use crate::endpoints::Fetchable;
 use crate::models::CardResume;

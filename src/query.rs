@@ -176,7 +176,7 @@ impl Query {
         });
         self
     }
-    
+
     /// Add query parameter to limit the number of results returned
     pub fn limit(&mut self, count: u32) -> &mut Self {
         self.params.push(QueryParam {

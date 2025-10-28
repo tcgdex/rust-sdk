@@ -32,7 +32,7 @@ use tcgdex_sdk::{TCGdex, Language};
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Fetch a card in one line
     let tcgdex = TCGdex::new(Language::EN);
-    let card = tcgdex.card.get(tcgdex.client(), "swsh3-136").await?;
+    let card = tcgdex.card.get("swsh3-136").await?;
 
     println!("Found: {} ({}/{})",
              card.name,
@@ -79,21 +79,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let tcgdex = TCGdex::new(Language::EN);
 
     // Get the cards made by the illustrator
-    let illustrator = tcgdex.illustrator.get(tcgdex.client(), "5ban Graphics").await?;
+    let illustrator = tcgdex.illustrator.get("5ban Graphics").await?;
 
     // Get the data about the Sword & Shield serie by ID
-    let series = tcgdex.serie.get(tcgdex.client(), "swsh").await?;
+    let series = tcgdex.serie.get("swsh").await?;
 
     // Get all cards with 110 HP
-    let hp_cards = tcgdex.hp.get(tcgdex.client(), "110").await?;
+    let hp_cards = tcgdex.hp.get("110").await?;
 
     // List all available rarities
-    let rarities = tcgdex.rarity.list(tcgdex.client(), None).await?;
+    let all_series = tcgdex.serie.list(None).await?;
 
     // List all cards with the name being "Furret"
     let mut query = Query::new();
     query.equal("name", "Furret");
-    let furret_cards = tcgdex.card.list(tcgdex.client(), Some(&query)).await?;
+    let furret_cards = tcgdex.card.list(Some(&query)).await?;
 
     Ok(())
 }
@@ -109,13 +109,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let tcgdex = TCGdex::new(Language::EN);
 
     // Get set details
-    let darkness_ablaze = tcgdex.set.get(tcgdex.client(), "swsh3").await?;
+    let darkness_ablaze = tcgdex.set.get("swsh3").await?;
     println!("Set: {} ({} cards)",
              darkness_ablaze.name,
              darkness_ablaze.card_count.total);
 
     // Get series info
-    let swsh = tcgdex.serie.get(tcgdex.client(), "swsh").await?;
+    let swsh = tcgdex.serie.get("swsh").await?;
     println!("Series: {} ({} sets)",
              swsh.name,
              swsh.sets.len());
@@ -124,7 +124,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Some(url) = darkness_ablaze.get_logo_url(Extension::PNG) {
         println!("Logo URL: {}", url);
         // You can download the image with:
-        // let logo_bytes = darkness_ablaze.get_logo(tcgdex.client(), Extension::PNG).await?;
+        // let logo_bytes = darkness_ablaze.get_logo(&tcgdex, Extension::PNG).await?;
     }
 
     Ok(())
@@ -143,14 +143,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let tcgdex = TCGdex::new(Language::EN);
 
     // Get a card
-    let card = tcgdex.card.get(tcgdex.client(), "base1-4").await?; // Charizard
+    let card = tcgdex.card.get("base1-4").await?; // Charizard
 
     // Get high resolution PNG image URL
     if let Some(image_url) = card.get_image_url(Quality::HIGH, Extension::PNG) {
         println!("Image URL: {}", image_url);
 
         // Download image
-        if let Some(image_bytes) = card.get_image(tcgdex.client(), Quality::HIGH, Extension::PNG).await? {
+        if let Some(image_bytes) = card.get_image(&tcgdex, Quality::HIGH, Extension::PNG).await? {
             // Save to file
             let mut file = File::create("charizard.png")?;
             file.write_all(&image_bytes)?;
@@ -229,7 +229,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          .sort("name", "asc");
 
     // Use the query
-    let cards = tcgdex.card.list(tcgdex.client(), Some(&query)).await?;
+    let cards = tcgdex.card.list(Some(&query)).await?;
     println!("Found {} matching cards", cards.len());
 
     Ok(())

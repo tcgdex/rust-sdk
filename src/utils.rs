@@ -1,13 +1,15 @@
 //! Utility functions for the TCGdex SDK
 
-use std::fmt;
-use serde::Deserializer;
-use serde::de::{Visitor, Error as DeError};
 use crate::error::Result;
 use crate::models::{Extension, Quality};
+use serde::de::{Error as DeError, Visitor};
+use serde::Deserializer;
+use std::fmt;
 
 /// Deserialize a value that could be either a string or a number into an i32
-pub fn deserialize_string_or_number_to_i32<'de, D>(deserializer: D) -> std::result::Result<Option<i32>, D::Error>
+pub fn deserialize_string_or_number_to_i32<'de, D>(
+    deserializer: D,
+) -> std::result::Result<Option<i32>, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -61,14 +63,14 @@ where
                 Err(E::custom(format!("integer out of range: {}", value)))
             }
         }
-        
+
         fn visit_none<E>(self) -> std::result::Result<Self::Value, E>
         where
             E: DeError,
         {
             Ok(None)
         }
-        
+
         fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
         where
             D: Deserializer<'de>,

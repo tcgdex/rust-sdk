@@ -1,7 +1,7 @@
 //! CardResume model implementation
 
-use serde::{Deserialize, Serialize};
 use async_trait::async_trait;
+use serde::{Deserialize, Serialize};
 
 use crate::endpoints::{Fetchable, Listable};
 use crate::error::Result;
@@ -25,28 +25,30 @@ pub struct CardResume {
 impl CardResume {
     /// Get the full image URL with the specified quality and extension
     pub fn get_image_url(&self, quality: Quality, extension: Extension) -> Option<String> {
-        self.image.as_deref().map(|base| utils::build_image_url(base, quality, extension))
+        self.image
+            .as_deref()
+            .map(|base| utils::build_image_url(base, quality, extension))
     }
-    
+
     /// Download the card image with the specified quality and extension
     pub async fn get_image(
         &self,
-        client: &reqwest::Client,
+        tcgdex: &crate::TCGdex,
         quality: Quality,
         extension: Extension,
     ) -> Result<Option<bytes::Bytes>> {
         match self.get_image_url(quality, extension) {
             Some(url) => {
-                let bytes = utils::download_image(client, &url).await?;
+                let bytes = utils::download_image(tcgdex.client(), &url).await?;
                 Ok(Some(bytes))
             }
             None => Ok(None),
         }
     }
-    
+
     /// Get the full card information
     pub async fn get_full_card(&self, tcgdex: &crate::TCGdex) -> Result<crate::models::Card> {
-        tcgdex.card.get(tcgdex.client(), &self.id).await
+        tcgdex.card.get(&self.id).await
     }
 }
 

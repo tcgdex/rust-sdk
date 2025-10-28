@@ -1,7 +1,7 @@
 //! Set model implementation
 
-use serde::{Deserialize, Serialize};
 use async_trait::async_trait;
+use serde::{Deserialize, Serialize};
 
 use crate::endpoints::{Fetchable, Listable};
 use crate::error::Result;
@@ -40,38 +40,42 @@ pub struct Set {
 impl Set {
     /// Get the full logo URL with the specified extension
     pub fn get_logo_url(&self, extension: Extension) -> Option<String> {
-        self.logo.as_deref().map(|base| utils::build_logo_url(base, extension))
+        self.logo
+            .as_deref()
+            .map(|base| utils::build_logo_url(base, extension))
     }
-    
+
     /// Download the set logo with the specified extension
     pub async fn get_logo(
         &self,
-        client: &reqwest::Client,
+        tcgdex: &crate::TCGdex,
         extension: Extension,
     ) -> Result<Option<bytes::Bytes>> {
         match self.get_logo_url(extension) {
             Some(url) => {
-                let bytes = utils::download_image(client, &url).await?;
+                let bytes = utils::download_image(tcgdex.client(), &url).await?;
                 Ok(Some(bytes))
             }
             None => Ok(None),
         }
     }
-    
+
     /// Get the full symbol URL with the specified extension
     pub fn get_symbol_url(&self, extension: Extension) -> Option<String> {
-        self.symbol.as_deref().map(|base| utils::build_logo_url(base, extension))
+        self.symbol
+            .as_deref()
+            .map(|base| utils::build_logo_url(base, extension))
     }
-    
+
     /// Download the set symbol with the specified extension
     pub async fn get_symbol(
         &self,
-        client: &reqwest::Client,
+        tcgdex: &crate::TCGdex,
         extension: Extension,
     ) -> Result<Option<bytes::Bytes>> {
         match self.get_symbol_url(extension) {
             Some(url) => {
-                let bytes = utils::download_image(client, &url).await?;
+                let bytes = utils::download_image(tcgdex.client(), &url).await?;
                 Ok(Some(bytes))
             }
             None => Ok(None),

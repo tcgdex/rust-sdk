@@ -5,10 +5,10 @@
 
 mod client;
 mod endpoints;
+mod error;
 mod models;
 mod query;
 mod utils;
-mod error;
 
 pub use client::TCGdex;
 pub use endpoints::Endpoint;
@@ -60,10 +60,16 @@ mod tests {
         assert_eq!(query.build(), "?name=eq%3APikachu&type=neq%3AFire");
 
         query.greater_than("hp", 100);
-        assert_eq!(query.build(), "?name=eq%3APikachu&type=neq%3AFire&hp=gt%3A100");
+        assert_eq!(
+            query.build(),
+            "?name=eq%3APikachu&type=neq%3AFire&hp=gt%3A100"
+        );
 
         query.sort("name", "asc");
-        assert_eq!(query.build(), "?name=eq%3APikachu&type=neq%3AFire&hp=gt%3A100&sort%3Afield=name&sort%3Aorder=asc");
+        assert_eq!(
+            query.build(),
+            "?name=eq%3APikachu&type=neq%3AFire&hp=gt%3A100&sort%3Afield=name&sort%3Aorder=asc"
+        );
     }
 
     // We would add actual API call tests here if we had mockable test data

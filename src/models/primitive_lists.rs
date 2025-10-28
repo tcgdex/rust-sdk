@@ -1,10 +1,10 @@
 //! Types for handling lists of primitive values from the API
 
-use std::fmt;
-use serde::{Deserialize, Serialize, Deserializer};
-use serde::de::{self, Visitor, SeqAccess};
-use async_trait::async_trait;
 use crate::endpoints::Listable;
+use async_trait::async_trait;
+use serde::de::{self, SeqAccess, Visitor};
+use serde::{Deserialize, Deserializer, Serialize};
+use std::fmt;
 
 /// Wrapper for a list of strings returned from the API
 #[derive(Debug, Clone, Serialize)]
@@ -63,17 +63,17 @@ impl StringList {
     pub fn inner(&self) -> &Vec<String> {
         &self.0
     }
-    
+
     /// Check if the list contains a specific string
     pub fn contains(&self, value: &str) -> bool {
         self.0.contains(&value.to_string())
     }
-    
+
     /// Check if the list is empty
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
-    
+
     /// Get the length of the list
     pub fn len(&self) -> usize {
         self.0.len()
@@ -144,17 +144,17 @@ impl IntList {
     pub fn inner(&self) -> &Vec<u32> {
         &self.0
     }
-    
+
     /// Check if the list contains a specific integer
     pub fn contains(&self, value: u32) -> bool {
         self.0.contains(&value)
     }
-    
+
     /// Check if the list is empty
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
-    
+
     /// Get the length of the list
     pub fn len(&self) -> usize {
         self.0.len()

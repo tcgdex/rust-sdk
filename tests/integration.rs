@@ -17,6 +17,16 @@ async fn test_get_card() {
 }
 
 #[tokio::test]
+async fn test_get_no_hp() {
+    let tcgdex = TCGdex::new(Language::DE);
+
+    // Test getting a specific card (Charizard from Base Set)
+    let card = tcgdex.card.get("swshp-SWSH296").await.unwrap();
+    assert_eq!(card.name, "Festival der Champions");
+    assert_eq!(card.hp, None);
+}
+
+#[tokio::test]
 async fn test_card_list() {
     let tcgdex = TCGdex::new(Language::EN);
 

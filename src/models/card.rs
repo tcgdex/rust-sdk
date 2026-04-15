@@ -27,6 +27,7 @@ pub struct Card {
     pub dex_ids: Option<Vec<i32>>,
     /// HP of the Pokémon - could be integer or string in the API
     #[serde(deserialize_with = "crate::utils::deserialize_string_or_number_to_i32")]
+    #[serde(default)]
     pub hp: Option<i32>,
     /// Types of the Pokémon
     pub types: Option<Vec<String>>,

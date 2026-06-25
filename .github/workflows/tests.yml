@@ -18,7 +18,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7
+        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
         with:
           components: clippy
           rustflags: ""
@@ -37,7 +37,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7
+        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
         with:
           components: rustfmt
           rustflags: ""
@@ -60,7 +60,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7
+        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659
         with:
           rustflags: ""
 
